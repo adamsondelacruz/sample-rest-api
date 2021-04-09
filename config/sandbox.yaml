@@ -1,0 +1,12 @@
+---
+# Region: us-east-1
+# Template: path-to-template.yaml
+# Parameters:
+#   SomeInputParameter: some value
+Tags:
+  Owner: IOT NINJA
+  Product: sample-project
+  Severity: High
+  Environment: sandbox
+  Contact: adamson.delacruz@gmail.com
+  DeletionPolicy: Retain

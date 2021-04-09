@@ -1,0 +1,27 @@
+---
+swagger: '2.0'
+info:
+  version: '1.0'
+  title:
+    Ref: AWS::StackName
+host:
+  Fn::Sub: ${Prefix}events.${HostedZoneName}
+schemes:
+- https
+paths:
+  /events/bigcommerce:
+    post:
+      responses: {}
+      security:
+      - api_key: []
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SampleFunction.Arn}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: x-api-key
+    in: header

@@ -1,0 +1,93 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Customer Information Sample Project
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: customer-info-sample-project
+    Description: Adamson dela Cruz Sample Project
+    Author: Adamson dela Cruz
+    SpdxLicenseId: MIT
+    LicenseUrl: LICENSE.txt
+    ReadmeUrl: README.md
+    Labels: ['customer-info-sample-project','cloudformation']
+    
+# Stack inputs
+Parameters:
+  MemorySize:
+    Type: Number
+    Description: Function Memory
+    Default: 128
+    AllowedValues: [ 128, 192, 256, 384, 512, 1024, 2048, 3008 ]
+  Runtime:
+    Type: String
+    Description: Lambda runtime
+    Default: python3.8.3
+  Timeout:
+    Type: Number
+    Description: Function Timeout
+    Default: 900
+  LogRetention:
+    Type: Number
+    Description: Log Retention
+    Default: 30
+    AllowedValues: [ 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653 ]
+
+# Global settings
+Globals:
+  Function:
+    AutoPublishAlias: latest
+    MemorySize: !Ref MemorySize
+    Runtime: !Ref Runtime
+    Timeout: !Ref Timeout
+    Tracing: Active
+    Layers:
+      - !Ref Dependencies
+
+Resources:
+  # Dependencies Layer
+  Dependencies:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${AWS::StackName}-dependencies
+      Description: !Sub ${AWS::StackName} dependencies
+      ContentUri: build/dependencies/
+      CompatibleRuntimes:
+        - python3.8.3
+      LicenseInfo: MIT
+      RetentionPolicy: Delete
+  # Serverless Function
+  SampleFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: SampleFunctionLogGroup
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-customer-info-sample-app
+      Description: !Sub ${AWS::StackName} Customer Information Sample Project
+      Handler: main.handler
+      CodeUri: app/
+      Policies:
+        - AWSXrayWriteOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Sid: ExamplePermissions
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              Resource: '*'
+  SampleFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-customer-info-sample-app
+      RetentionInDays: !Ref LogRetention
+
+Outputs:
+  SampleFunctionArn:
+    Description: Sample Function ARN
+    Value: !GetAtt SampleFunction.Arn
+  SampleFunctionAlias:
+    Description: Sample Function Alias
+    Value: !Sub ${SampleFunction.Alias}
+  SampleFunctionVersion:
+    Description: Sample Function Version
+    Value: !Sub ${SampleFunction.Version}

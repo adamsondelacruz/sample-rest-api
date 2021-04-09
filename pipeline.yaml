@@ -1,0 +1,20 @@
+Transform: AWS::Serverless-2016-10-31
+Description: Sample Project Pipeline
+Resources:
+  Pipeline:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:ap-southeast-2:366861212343:applications/pipeline
+        SemanticVersion: 0.9.20
+      Parameters: 
+        PipelineName: sample-project
+        RepositoryName: iotninja/sample-project
+        GlobalDeployment: 'false'
+        DeployToSandbox: 'true'
+        DeployToQa: 'true'
+        DeployToStaging: 'true'
+        DeployToProduction: 'true'
+        DeployToBuild: 'false'
+        GitCloneDepth: 0
+        PublishRelease: 'false'

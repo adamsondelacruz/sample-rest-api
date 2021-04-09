@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+bumpversion = "*"
+aws-sam-cli = "*"
+cfn-lint = "*"
+pylint = "*"
+astroid = "*"
+git-stamp = "*"
+safety = "*"
+ipykernel = "*"
+jupyterlab = "*"
+
+[packages]
+aws-xray-sdk = "*"
+six = "*"
+regex = "*"
+
+[requires]
+python_version = "3.8.3"
